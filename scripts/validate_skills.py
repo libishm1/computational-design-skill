@@ -2,9 +2,11 @@
 
 Checks, for every skills/<name>/SKILL.md:
   1. Frontmatter has name (equal to the folder name) and a description of at
-     least 80 characters.
+     least 80 characters, with no colon-space inside it (YAML parsers fail).
   2. Every relative file reference in the SKILL.md body exists.
-  3. No private markers appear in any text file: local drive paths, user
+  3. Local-model limits: SKILL.md at most 150 lines, a Quick start section,
+     and a Contents list in any reference longer than 300 lines.
+  4. No private markers appear in any text file: local drive paths, user
      folder paths, email addresses, personal or client names, and token-like
      strings. The tests/ folder and this script are excluded because the
      tests hold deliberately bad fixtures.
@@ -22,10 +24,13 @@ from pathlib import Path
 
 TEXT_SUFFIXES = {".md", ".py", ".txt", ".json", ".yml", ".yaml", ".toml"}
 MIN_DESCRIPTION = 80
+MAX_SKILL_LINES = 150       # entry file must fit a small local model's context
+LONG_REFERENCE = 300        # references longer than this need a Contents list
 
 # Private markers. Extend this list when a new personal name or path appears.
 PRIVATE_PATTERNS = [
-    (re.compile(r"[A-Za-z]:\\"), "local drive path"),
+    # A Windows drive path: drive letter at a word start, then :\ and a word character.
+    (re.compile(r"(?<![\w\\])[A-Za-z]:\\\w"), "local drive path"),
     (re.compile(r"[A-Za-z]:/(?:Users|code_ws|Template)", re.IGNORECASE), "local drive path"),
     (re.compile(r"/c/Users/", re.IGNORECASE), "local user path"),
     (re.compile(r"/Users/[A-Za-z]", re.IGNORECASE), "local user path"),
@@ -54,6 +59,23 @@ def parse_frontmatter(text):
     return fields
 
 
+def check_local_limits(skill_dir, text):
+    """Limits that keep a skill usable by small local models."""
+    problems = []
+    n = text.count("\n")
+    if n > MAX_SKILL_LINES:
+        problems.append(f"{skill_dir.name}: SKILL.md has {n} lines, limit is {MAX_SKILL_LINES}; split it")
+    if "## Quick start" not in text:
+        problems.append(f"{skill_dir.name}: SKILL.md needs a '## Quick start' section for small models")
+    refs = skill_dir / "references"
+    if refs.is_dir():
+        for ref in sorted(refs.glob("*.md")):
+            rt = ref.read_text(encoding="utf-8", errors="replace")
+            if rt.count("\n") > LONG_REFERENCE and "## Contents" not in rt:
+                problems.append(f"{skill_dir.name}: {ref.name} is long and needs a '## Contents' list")
+    return problems
+
+
 def check_skill(skill_dir):
     problems = []
     skill_md = skill_dir / "SKILL.md"
@@ -66,11 +88,15 @@ def check_skill(skill_dir):
         return problems
     if fm.get("name") != skill_dir.name:
         problems.append(f"{skill_dir.name}: frontmatter name is {fm.get('name')!r}, expected folder name")
-    if len(fm.get("description", "")) < MIN_DESCRIPTION:
+    description = fm.get("description", "")
+    if ": " in description:
+        problems.append(f"{skill_dir.name}: description contains a colon and space; YAML parsers will fail. Use a dash.")
+    if len(description) < MIN_DESCRIPTION:
         problems.append(f"{skill_dir.name}: description shorter than {MIN_DESCRIPTION} characters")
     for rel in sorted(set(LINK_RE.findall(text))):
         if not (skill_dir / rel).exists():
             problems.append(f"{skill_dir.name}: referenced file missing: {rel}")
+    problems.extend(check_local_limits(skill_dir, text))
     return problems
 
 

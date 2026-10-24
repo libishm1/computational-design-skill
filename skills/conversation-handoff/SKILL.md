@@ -6,6 +6,13 @@ license: see repository LICENSE
 
 # Conversation handoff
 
+## Quick start (for small local models)
+
+1. Find the project's Claude Code projects folder. Pass it as `--projects-dir`.
+2. Choose a dated output folder.
+3. Run `python scripts/extract_sessions.py --projects-dir <dir> --out-dir <out>`.
+4. Open the `README.md` index in the output folder. Check the counts.
+
 Creates local digests of session transcripts. The digests let a new session or
 a new agent pick up the work without re-reading full transcripts.
 
