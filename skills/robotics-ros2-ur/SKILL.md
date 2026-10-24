@@ -7,6 +7,15 @@ license: see repository LICENSE
 
 # Robotics on ROS 2 with Universal Robots
 
+## Quick start (for small local models)
+
+1. Set the safety level first. Default is Level 1 (offline) or Level 2 (simulation).
+2. Write every pose with its units, frame, rotation convention, and TCP offset.
+3. Keep the URScript waypoint format: `global WP_n = p[x, y, z, rx, ry, rz]`.
+4. Build with `colcon build`. Run the unit tests.
+5. Record a `ros2 bag` of the simulation run.
+6. Do not run any hardware command. Stop and ask the owner for approval.
+
 Procedure only. Hardware motion is never started by this skill.
 
 ## Safety levels (apply first)

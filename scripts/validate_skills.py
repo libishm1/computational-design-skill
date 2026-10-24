@@ -22,6 +22,8 @@ from pathlib import Path
 
 TEXT_SUFFIXES = {".md", ".py", ".txt", ".json", ".yml", ".yaml", ".toml"}
 MIN_DESCRIPTION = 80
+MAX_SKILL_LINES = 150       # entry file must fit a small local model's context comfortably
+LONG_REFERENCE = 300        # references longer than this must carry a Contents list
 
 # Private markers. Extend this list when a new personal name or path appears.
 PRIVATE_PATTERNS = [
@@ -71,6 +73,24 @@ def check_skill(skill_dir):
     for rel in sorted(set(LINK_RE.findall(text))):
         if not (skill_dir / rel).exists():
             problems.append(f"{skill_dir.name}: referenced file missing: {rel}")
+    problems.extend(check_local_limits(skill_dir, text))
+    return problems
+
+
+def check_local_limits(skill_dir, text):
+    """Limits that keep a skill usable by small local models."""
+    problems = []
+    n = text.count("\n")
+    if n > MAX_SKILL_LINES:
+        problems.append(f"{skill_dir.name}: SKILL.md has {n} lines, limit is {MAX_SKILL_LINES}; split it")
+    if "## Quick start" not in text:
+        problems.append(f"{skill_dir.name}: SKILL.md needs a '## Quick start' section for small models")
+    refs = skill_dir / "references"
+    if refs.is_dir():
+        for ref in sorted(refs.glob("*.md")):
+            rt = ref.read_text(encoding="utf-8", errors="replace")
+            if rt.count("\n") > LONG_REFERENCE and "## Contents" not in rt:
+                problems.append(f"{skill_dir.name}: {ref.name} is long and needs a '## Contents' list")
     return problems
 
 
