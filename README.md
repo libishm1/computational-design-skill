@@ -1,95 +1,94 @@
-# Computational Design Skill for Claude.ai
+# Computational Design Skills
 
-A Claude.ai user skill for computational design in Architecture, Engineering and Construction (AEC).
+Agent skills for computational design, AI-assisted debugging, research synthesis and
+session handoff. Works with Claude (claude.ai and Claude Code), Codex and local agents
+(Qwen, Llama, or any model behind an OpenAI-compatible endpoint). Each skill is a folder with a
+`SKILL.md` file and supporting references, scripts, or templates.
 
-Consolidated from [Amanbh997/Claude-skills-for-Computational-Designers](https://github.com/Amanbh997/Claude-skills-for-Computational-Designers) and tailored for:
+## Skills
 
-- **GraphML / GNN research** — Bridge-to-GNN framework (Categories A–D), IFC as heterogeneous graph, PyTorch Geometric patterns, PRISMA search methodology
-- **Topologic + IFC spatial reasoning** — CellComplex from IFC, fire egress shortest path, RL evacuation agent
-- **Grasshopper teaching** — Student error catalog (10 most common errors), explanation scaffolds for data trees, attractors, Graft
-- **Hot-arid / Riyadh climate** — ASHRAE 90.1 targets, Riyadh EPW benchmarks, glazing SHGC, shading fin depth calculation, UTCI outdoor comfort
-- **Robotic fabrication** — UR10e + OnRobot RG6 as primary stack; full multi-brand coverage (ABB, KUKA, Fanuc); URScript, RAPID, KRL; HAL Robotics, KUKA|prc, Robots plugin
+| Skill | Use it for | Entry file |
+|---|---|---|
+| `computational-design` | Grasshopper and parametric modelling, GraphML for AEC, Topologic and IFC, environmental simulation (hot-arid examples), structural rules of thumb, fabrication (CNC, laser, UR10e), scripting patterns | `skills/computational-design/SKILL.md` |
+| `ai-debugging` | Debugging native and managed code with an agent: C and C++ (gdb, lldb, cdb, sanitizers), C# and .NET (SOS, dotnet-dump, async, binding), RhinoCommon and Grasshopper plugins | `skills/ai-debugging/SKILL.md` |
+| `research-synthesis` | Reproducible literature reviews and gap analysis: PRISMA 2020 counts, per-method extraction cards, ROSES-style cross-disciplinary synthesis, gap ranking, counting and honesty rules | `skills/research-synthesis/SKILL.md` |
+| `conversation-handoff` | Local dated digests of past agent sessions, for resuming work | `skills/conversation-handoff/SKILL.md` |
 
-## Contents
+The skills describe methods and checklists. They do not state conclusions about any
+field. Fill them with your own sources and results.
+
+## Repository layout
 
 ```
 skills/
-└── computational-design/
-    ├── SKILL.md                          # Main skill file (756 lines)
-    └── references/
-        ├── gh-component-index.md         # 200+ Grasshopper components
-        ├── fabrication-specs.md          # CNC, laser, robotic process parameters
-        ├── environmental-benchmarks.md   # Daylight, energy, wind, thermal (hot-arid context)
-        ├── structural-rules-of-thumb.md  # Span/depth ratios, load cases, material strengths
-        └── scripting-patterns.md         # GhPython, RhinoCommon, pyRevit code patterns
+├── computational-design/
+│   ├── SKILL.md
+│   └── references/        gh-component-index, scripting-patterns, fabrication-specs,
+│                          environmental-benchmarks, structural-rules-of-thumb
+├── ai-debugging/
+│   ├── SKILL.md
+│   └── references/        cpp-debugger, csharp-debugger, rhinocommon-debugger
+├── research-synthesis/
+│   ├── SKILL.md
+│   ├── references/        gap-analysis
+│   └── templates/         protocol, prisma-flow, extraction-card, roses-synthesis
+└── conversation-handoff/
+    ├── SKILL.md
+    └── scripts/           extract_sessions.py (standard library only)
+scripts/validate_skills.py  structure, link, and private-marker checks
+tests/                      unit tests for the validator
 ```
 
-## Skills Covered
+## Install
 
-| # | Skill | Key Topics |
-|---|---|---|
-| 1 | GraphML for AEC | GNN, heterogeneous graphs, IFC→graph, Bridge-to-GNN A–D, PRISMA |
-| 2 | Topologic + IFC | CellComplex, fire egress, shortest path, RL evacuation |
-| 3 | Parametric Modeling | Grasshopper teaching, data trees, student error catalog |
-| 4 | Generative Design | Galapagos, Octopus, Wallacei, NSGA-II, Kangaroo form-finding |
-| 5 | Environmental Simulation | Ladybug/Honeybee, hot-arid benchmarks, Riyadh EPW, shading calc |
-| 6 | Structural Computation | Karamba3D, Kangaroo, form-finding, SIMP topology optimization |
-| 7 | Facade Computation | Panelization, PQ mesh, hot-arid shading strategy |
-| 8 | BIM Scripting | pyRevit, IfcOpenShell, Revit API |
-| 9 | Scripting Reference | GhPython, RhinoCommon, C# Grasshopper |
-| 10 | Robotic Fabrication | UR10e (primary), ABB, KUKA, Fanuc; URScript, RAPID, KRL; HAL, KUKA\|prc |
-| 11 | ML for AEC | XGBoost surrogates, SAM/GroundedSAM, LLM task planning, PointNet++ |
-| 12 | Optimization Methods | NSGA-II, Bayesian opt, SIMP, pymoo |
-| 13 | Interoperability | Speckle, Rhino.Inside, IFC pipelines, format matrix |
-| 14 | Mesh Processing | Subdivision schemes, half-edge, mesh quality |
-| 15 | Data-Driven Design | GIS, space syntax, Elk, Heron |
-| 16 | Design Automation | Rule-based layout, drawing automation |
+### Claude.ai (user skills)
 
-## Installation
-
-### Option 1 — Claude.ai User Skills (claude.ai interface)
-
-Copy `skills/computational-design/` into your Claude user skills directory:
+Copy one skill folder into your Claude user skills directory:
 
 ```bash
 cp -r skills/computational-design/ /path/to/claude/skills/user/
 ```
 
-The skill auto-activates based on topic detection. Trigger keywords include: Grasshopper, parametric, GraphML, GNN, Topologic, Karamba, Ladybug, Honeybee, IFC, Revit API, fabrication, UR10e, robotic, facade, panelization, NSGA-II, and many more.
+Skills load by topic. Trigger words in each `description` field tell Claude when to use it.
 
-### Option 2 — Claude Code CLI
+### Claude Code
+
+Point Claude Code at the repository, or copy the skill folders into `.claude/skills/` in
+your project:
 
 ```bash
-claude --plugin-dir "/path/to/this-repo"
+mkdir -p .claude/skills && cp -r skills/* .claude/skills/
 ```
 
-## Usage
+### Codex and local agents
 
-Once installed, just ask Claude about computational design topics — the skill loads automatically:
+Read `AGENTS.md` at the repository root. It lists the skills and the rules every agent
+follows. Load a `SKILL.md` file as a system or context document when a task matches its
+description.
 
-```
-"How do I build a heterogeneous GNN on an IFC building model?"
-→ Skill 1 (GraphML) activates
+## Check the repository
 
-"Set up a fire egress graph from a Topologic CellComplex"
-→ Skill 2 (Topologic) activates
-
-"My students are confused about Grasshopper data trees"
-→ Skill 3 (Parametric + Teaching) activates
-
-"What glazing SHGC should I use for a west-facing facade in Riyadh?"
-→ Skill 5 (Environmental / hot-arid) activates
-
-"URScript for a pick-and-place sequence on UR10e"
-→ Skill 10 (Robotic Fabrication) activates
+```bash
+python scripts/validate_skills.py     # structure, links, private-marker scan
+python -m unittest discover -s tests -v
 ```
 
-## Context
+Both commands use only the Python standard library.
 
-Built for research at **CM-iTAD Lab, Alfaisal University, Riyadh** — GraphML for AEC, robotic fabrication, and computational design education.
+## Privacy and contributions
 
-Base plugin: [Amanbh997/Claude-skills-for-Computational-Designers](https://github.com/Amanbh997/Claude-skills-for-Computational-Designers) (MIT License)
+- No file paths, personal names, client names, contact details or credentials belong in a
+  skill. The validator fails on them.
+- Add a new skill as `skills/<name>/SKILL.md` with frontmatter `name` (equal to the folder
+  name) and a `description` of at least 80 characters. Run the validator before opening a
+  pull request.
+
+## Origin
+
+`computational-design` extends
+[Amanbh997/Claude-skills-for-Computational-Designers](https://github.com/Amanbh997/Claude-skills-for-Computational-Designers)
+(MIT). Other skills are original to this repository. See `LICENSE`.
 
 ## License
 
-MIT
+MIT. See `LICENSE`.
