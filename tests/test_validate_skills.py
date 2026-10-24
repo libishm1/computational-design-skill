@@ -116,5 +116,15 @@ class LocalModelLimitTests(unittest.TestCase):
         self.assertEqual([p for p in problems if "okref" in p], [])
 
 
+class ColonRuleTests(unittest.TestCase):
+    def test_colon_space_in_description_fails(self):
+        import tempfile as tf
+        with tf.TemporaryDirectory() as d:
+            root = Path(d)
+            make_skill(root, "colony", desc="Use this: skill to test the colon rule with a long enough text here.")
+            problems, _ = v.run(root)
+            self.assertTrue(any("colon and space" in p for p in problems))
+
+
 if __name__ == "__main__":
     unittest.main()

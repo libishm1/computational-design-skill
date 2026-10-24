@@ -1,6 +1,6 @@
 ---
 name: rhino-gh-presentation-checks
-description: Procedure for making Grasshopper examples and results presentable and checkable: self-presenting final forms, hidden previews before capture, small captures, numbered saves that never overwrite, cold-reopen acceptance, live validation and the pre-ship checklist. Use when preparing a shipped example, capturing a result from Rhino, or checking a definition before handoff.
+description: Procedure for making Grasshopper examples and results presentable and checkable - self-presenting final forms, hidden previews before capture, small captures, numbered saves that never overwrite, cold-reopen acceptance, live validation and the pre-ship checklist. Use when preparing a shipped example, capturing a result from Rhino, or checking a definition before handoff.
 compatibility: Claude, Codex, local models, Herdr and Omarchy as clients. Rhino 8 and Grasshopper run on Windows or macOS. Ubuntu can drive a remote Rhino host.
 license: see repository LICENSE
 ---

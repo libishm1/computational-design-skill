@@ -1,6 +1,6 @@
 ---
 name: rhino-gh-components
-description: Procedure for authoring Grasshopper components and definitions: data matching, solve rules, one canonical type per concept, accept-either inputs, synchronous versus asynchronous components, heavy geometry, units and tolerances, and design-grounded citations. Use when writing or reviewing a Grasshopper component, wiring a definition, or choosing sync or async. Windows or macOS only for Rhino steps.
+description: Procedure for authoring Grasshopper components and definitions - data matching, solve rules, one canonical type per concept, accept-either inputs, synchronous versus asynchronous components, heavy geometry, units and tolerances, and design-grounded citations. Use when writing or reviewing a Grasshopper component, wiring a definition, or choosing sync or async. Windows or macOS only for Rhino steps.
 compatibility: Claude, Codex, local models, Herdr and Omarchy as clients. Rhino 8 and Grasshopper run on Windows or macOS. Ubuntu can drive a remote Rhino host.
 license: see repository LICENSE
 ---

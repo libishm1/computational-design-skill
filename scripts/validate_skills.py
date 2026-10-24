@@ -68,6 +68,8 @@ def check_skill(skill_dir):
         return problems
     if fm.get("name") != skill_dir.name:
         problems.append(f"{skill_dir.name}: frontmatter name is {fm.get('name')!r}, expected folder name")
+    if ": " in fm.get("description", ""):
+        problems.append(f"{skill_dir.name}: description contains a colon and space; YAML parsers will fail. Use a dash.")
     if len(fm.get("description", "")) < MIN_DESCRIPTION:
         problems.append(f"{skill_dir.name}: description shorter than {MIN_DESCRIPTION} characters")
     for rel in sorted(set(LINK_RE.findall(text))):
